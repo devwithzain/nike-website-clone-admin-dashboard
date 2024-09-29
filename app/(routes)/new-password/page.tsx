@@ -1,4 +1,4 @@
-import { NewPasswordForm } from "@/components";
+import NewPasswordForm from "@/components/auth/new-password-form";
 
 export default function NewPassword() {
 	return (
