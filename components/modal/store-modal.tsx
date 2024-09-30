@@ -11,12 +11,12 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStoreModal } from "@/hooks/user-store-modal";
 import { createStoreSchema, TcreateStoreData } from "@/schemas";
-import toast from "react-hot-toast";
 
 export default function StoreModal() {
 	const useStore = useStoreModal();
@@ -28,17 +28,22 @@ export default function StoreModal() {
 		},
 	});
 
-	const { isSubmitting } = form.formState;
+	const {
+		reset,
+		formState: { isSubmitting },
+	} = form;
 
 	const onSubmits = async (data: TcreateStoreData) => {
 		try {
 			const response = await axios.post("/api/stores", data);
-			if (response?.data.success) {
-				toast.success(response?.data.success);
+			if (response?.data.status === 201) {
+				window.location.assign(`/${response.data.id}`);
+			} else {
+				toast.error("Failed to create store!");
 			}
-			console.log(response.data);
+			reset();
 		} catch (error) {
-			console.log("first");
+			toast.error("An error occurred while creating the store.");
 		}
 	};
 

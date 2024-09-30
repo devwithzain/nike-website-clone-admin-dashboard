@@ -8,16 +8,19 @@ generator client {
 }
 
 model Admin {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(uuid()) @map("_id")
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
   password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Store         Store[]
 }
 
 model PasswordResetToken {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(uuid()) @map("_id")
   email   String
   token   String   @unique
   expires DateTime
@@ -26,9 +29,10 @@ model PasswordResetToken {
 }
 
 model Store {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid()) @map("_id")
   name      String
   userId    String
+  user      Admin    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
