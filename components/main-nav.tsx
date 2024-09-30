@@ -1,11 +1,12 @@
+"use client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useParams, usePathname } from "next/navigation";
 
 export default function MainNav({
 	className,
-	...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: // ...props
+React.HTMLAttributes<HTMLElement>) {
 	const params = useParams();
 	const pathName = usePathname();
 	const routes = [
