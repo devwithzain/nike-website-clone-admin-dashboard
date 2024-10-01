@@ -37,7 +37,7 @@ export default function StoreModal() {
 		try {
 			const response = await axios.post("/api/stores", data);
 			if (response?.data.status === 201) {
-				window.location.assign(`/${response.data.id}`);
+				window.location.assign(`/dashboard/${response.data.id}`);
 			} else {
 				toast.error("Failed to create store!");
 			}

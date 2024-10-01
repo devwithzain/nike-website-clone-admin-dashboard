@@ -11,9 +11,9 @@ React.HTMLAttributes<HTMLElement>) {
 	const pathName = usePathname();
 	const routes = [
 		{
-			href: `/${params.storeId}/settings`,
+			href: `/dashboard/${params.storeId}/settings`,
 			label: "Settings",
-			active: pathName === `/${params.storeId}/settings`,
+			active: pathName === `/dashboard/${params.storeId}/settings`,
 		},
 	];
 	return (

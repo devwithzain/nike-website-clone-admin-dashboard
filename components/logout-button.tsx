@@ -3,5 +3,11 @@ import { Button } from "./ui/button";
 import { logout } from "@/action/logout";
 
 export default function LogoutButton() {
-	return <Button onClick={() => logout}>LogOut</Button>;
+	return (
+		<Button
+			size="sm"
+			onClick={() => logout()}>
+			LogOut
+		</Button>
+	);
 }

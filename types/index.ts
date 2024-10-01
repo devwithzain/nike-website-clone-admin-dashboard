@@ -1,6 +1,12 @@
 import { Store } from "@prisma/client";
 import { PopoverTrigger } from "@/components/ui/popover";
 
+type TpopOverTriggerProps =
+   React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
+export interface TswitchStoreProps extends TpopOverTriggerProps {
+   items: Store[];
+};
+
 export type TmodallProps = {
    title: string;
    description: string;
@@ -15,8 +21,14 @@ export type TuseStoreModallProps = {
    onClose: () => void;
 };
 
-type TpopOverTriggerProps =
-   React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
-export interface TswitchStoreProps extends TpopOverTriggerProps {
-   items: Store[];
+export type TheadingProps = {
+   title: string;
+   description: string;
+};
+
+export type TuseAlerteModalProps = {
+   loading: boolean;
+   isOpen: boolean;
+   onClose: () => void;
+   onConfirm: () => void;
 };

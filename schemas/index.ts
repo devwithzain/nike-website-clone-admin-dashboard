@@ -54,8 +54,15 @@ export const createStoreSchema = z.object({
   }),
 });
 
-export type TcreateStoreData = z.infer<typeof createStoreSchema>;
+export const settingFormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+});
+
 export type TsettingData = z.infer<typeof settingSchema>;
 export type TloginFormData = z.infer<typeof loginFormSchema>;
 export type TresetFormData = z.infer<typeof resetFormSchema>;
+export type TcreateStoreData = z.infer<typeof createStoreSchema>;
+export type TsettingFormData = z.infer<typeof settingFormSchema>;
 export type TnewPasswordFormData = z.infer<typeof newPasswordFormSchema>;
