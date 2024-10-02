@@ -5,11 +5,21 @@ import { useParams, usePathname } from "next/navigation";
 
 export default function MainNav({
 	className,
-}: // ...props
-React.HTMLAttributes<HTMLElement>) {
+	...props
+}: React.HTMLAttributes<HTMLElement>) {
 	const params = useParams();
 	const pathName = usePathname();
 	const routes = [
+		{
+			href: `/dashboard/${params.storeId}`,
+			label: "Overview",
+			active: pathName === `/dashboard/${params.storeId}`,
+		},
+		{
+			href: `/dashboard/${params.storeId}/billboards`,
+			label: "Billboards",
+			active: pathName === `/dashboard/${params.storeId}/billboards`,
+		},
 		{
 			href: `/dashboard/${params.storeId}/settings`,
 			label: "Settings",

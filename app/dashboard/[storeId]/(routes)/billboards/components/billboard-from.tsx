@@ -3,18 +3,15 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Store } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import Heading from "@/components/ui/heading";
-import { useOrigin } from "@/hooks/use-origin";
 import { Button } from "@/components/ui/button";
-import ApiAlert from "@/components/ui/api-alert";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "@/components/modal/alert-modal";
-import { settingFormSchema, TsettingFormData } from "@/schemas";
+import { billboardFormSchema, TbillboardFormData } from "@/schemas";
 import {
 	Form,
 	FormControl,
@@ -23,23 +20,38 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { Billboard } from "@prisma/client";
+import ImageUpload from "@/components/ui/image-upload";
 
-export default function SettingFrom({ initialData }: { initialData: Store }) {
+export default function BillboardForm({
+	initialData,
+}: {
+	initialData: Billboard | null;
+}) {
 	const params = useParams();
 	const router = useRouter();
-	const origin = useOrigin();
 	const [open, setOpen] = useState(false);
 
-	const form = useForm<TsettingFormData>({
-		resolver: zodResolver(settingFormSchema),
-		defaultValues: initialData,
+	const form = useForm<TbillboardFormData>({
+		resolver: zodResolver(billboardFormSchema),
+		defaultValues: initialData || {
+			label: "",
+			imageUrl: [],
+		},
 	});
 
 	const {
 		formState: { isSubmitting },
 	} = form;
 
-	const onSubmits = async (data: TsettingFormData) => {
+	const title = initialData ? "Edit a billboard" : "Create billboard";
+	const description = initialData ? "Edit a billboard" : "Add a new billboard";
+	const action = initialData ? "Save changes" : "Create";
+	const toastMessage = initialData
+		? "Billboard updated."
+		: "Billboard created.";
+
+	const onSubmits = async (data: TbillboardFormData) => {
 		try {
 			const response = await axios.patch(`/api/stores/${params.storeId}`, data);
 			if (response?.data.status === 201) {
@@ -59,7 +71,7 @@ export default function SettingFrom({ initialData }: { initialData: Store }) {
 			if (response?.data.status === 201) {
 				router.refresh();
 				router.push("/dashboard");
-				toast.success(response?.data.message);
+				toast.success("asd");
 			} else {
 				toast.error("Something went wrong");
 			}
@@ -81,32 +93,51 @@ export default function SettingFrom({ initialData }: { initialData: Store }) {
 			/>
 			<div className="flex items-center justify-between">
 				<Heading
-					title="Settings"
-					description="Manage store preferences"
+					title={title}
+					description={description}
 				/>
-				<Button
-					disabled={isSubmitting}
-					variant="destructive"
-					size="icon"
-					onClick={() => setOpen(true)}>
-					<Trash className="w-4 h-4" />
-				</Button>
+				{initialData && (
+					<Button
+						disabled={isSubmitting}
+						variant="destructive"
+						size="sm"
+						onClick={() => setOpen(true)}>
+						<Trash className="h-4 w-4" />
+					</Button>
+				)}
 			</div>
 			<Separator />
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmits)}
 					className="space-y-4 w-full">
+					<FormField
+						control={form.control}
+						name="imageUrl"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Background Image</FormLabel>
+								<FormControl>
+									<ImageUpload
+										onChange={(url) => field.onChange(url)}
+										value={field.value ? [field.value] : []}
+										onRemove={() => field.onChange("")}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 					<div className="grid grid-cols-3 gap-8">
 						<FormField
 							control={form.control}
-							name="name"
+							name="label"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>Label</FormLabel>
 									<FormControl>
 										<Input
-											placeholder="Store name"
+											placeholder="Billboard label"
 											{...field}
 										/>
 									</FormControl>
@@ -118,16 +149,10 @@ export default function SettingFrom({ initialData }: { initialData: Store }) {
 					<Button
 						disabled={isSubmitting}
 						type="submit">
-						Save changes
+						{action}
 					</Button>
 				</form>
 			</Form>
-			<Separator />
-			<ApiAlert
-				title="NEXT_PUBLIC_API_URL"
-				description={`${origin}/api/${params.storeId}`}
-				variant="public"
-			/>
 		</>
 	);
 }
