@@ -29,10 +29,21 @@ model PasswordResetToken {
 }
 
 model Store {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String      @id @default(uuid()) @map("_id")
   name      String
   userId    String
-  user      Admin    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      Admin       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Billboard Billboard[]
+}
+
+model Billboard {
+  id        String   @id @default(uuid()) @map("_id")
+  label     String
+  imageUrl  String
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

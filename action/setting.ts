@@ -1,6 +1,6 @@
 "use server";
 import bcrypt from "bcryptjs";
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { TsettingData } from "@/schemas";
 import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/current-user";

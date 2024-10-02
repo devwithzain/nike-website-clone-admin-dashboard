@@ -60,9 +60,17 @@ export const settingFormSchema = z.object({
   }),
 });
 
+export const billboardFormSchema = z.object({
+  label: z.string().min(1, {
+    message: "Name is required",
+  }),
+  imageUrl: z.string(),
+});
+
 export type TsettingData = z.infer<typeof settingSchema>;
 export type TloginFormData = z.infer<typeof loginFormSchema>;
 export type TresetFormData = z.infer<typeof resetFormSchema>;
 export type TcreateStoreData = z.infer<typeof createStoreSchema>;
 export type TsettingFormData = z.infer<typeof settingFormSchema>;
+export type TbillboardFormData = z.infer<typeof billboardFormSchema>;
 export type TnewPasswordFormData = z.infer<typeof newPasswordFormSchema>;

@@ -32,3 +32,16 @@ export type TuseAlerteModalProps = {
    onClose: () => void;
    onConfirm: () => void;
 };
+
+export type TapiAlertProps = {
+   title: string;
+   description: string;
+   variant: "public" | "admin";
+};
+
+export type TimageUploadProps = {
+   onChange: (value: string) => void;
+   onRemove: (value: string) => void;
+   value: string[];
+   disabled?: boolean;
+};
