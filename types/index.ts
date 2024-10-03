@@ -52,7 +52,28 @@ export type TBillboardColumnProps = {
    createdAt: string;
 };
 
+export type TCategoryColumnProps = {
+   id: string;
+   name: string;
+   label: string;
+   createdAt: string;
+};
+
 export type TapiListProps = {
    entityName: string;
    entityIdName: string;
+};
+
+export type TcolorColumnProps = {
+   id: string;
+   name: string;
+   value: string;
+   createdAt: string;
+};
+
+export type TsizeColumnProps = {
+   id: string;
+   name: string;
+   value: string;
+   createdAt: string;
 };

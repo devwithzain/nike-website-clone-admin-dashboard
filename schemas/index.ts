@@ -62,15 +62,40 @@ export const settingFormSchema = z.object({
 
 export const billboardFormSchema = z.object({
   label: z.string().min(1, {
-    message: "Name is required",
+    message: "Label is required",
   }),
   imageUrl: z.string(),
 });
 
+export const categoryFormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+  billboardId: z.string().min(1, {
+    message: "BillboardId is required",
+  })
+});
+
+export const colorFormSchema = z.object({
+  name: z.string().min(2),
+  value: z.string().min(4).max(9).regex(/^#/, {
+    message: "String must be a valid hex code",
+  }),
+});
+
+export const sizeFormSchema = z.object({
+  name: z.string().min(1),
+  value: z.string().min(1),
+});
+
+
 export type TsettingData = z.infer<typeof settingSchema>;
+export type TsizeFormData = z.infer<typeof sizeFormSchema>;
+export type TcolorFormData = z.infer<typeof colorFormSchema>;
 export type TloginFormData = z.infer<typeof loginFormSchema>;
 export type TresetFormData = z.infer<typeof resetFormSchema>;
 export type TcreateStoreData = z.infer<typeof createStoreSchema>;
 export type TsettingFormData = z.infer<typeof settingFormSchema>;
+export type TcategoryFormData = z.infer<typeof categoryFormSchema>;
 export type TbillboardFormData = z.infer<typeof billboardFormSchema>;
 export type TnewPasswordFormData = z.infer<typeof newPasswordFormSchema>;
