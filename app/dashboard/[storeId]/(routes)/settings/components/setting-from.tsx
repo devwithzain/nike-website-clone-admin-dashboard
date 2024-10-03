@@ -126,7 +126,7 @@ export default function SettingFrom({ initialData }: { initialData: Store }) {
 			<ApiAlert
 				title="NEXT_PUBLIC_API_URL"
 				description={`${origin}/api/${params.storeId}`}
-				variant="public"
+				variant="admin"
 			/>
 		</>
 	);
