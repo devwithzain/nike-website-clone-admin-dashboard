@@ -27,7 +27,7 @@ export type TheadingProps = {
 };
 
 export type TuseAlerteModalProps = {
-   loading: boolean;
+   loading?: boolean;
    isOpen: boolean;
    onClose: () => void;
    onConfirm: () => void;
@@ -44,4 +44,15 @@ export type TimageUploadProps = {
    onRemove: (value: string) => void;
    value: string[];
    disabled?: boolean;
+};
+
+export type TBillboardColumnProps = {
+   id: string;
+   label: string;
+   createdAt: string;
+};
+
+export type TapiListProps = {
+   entityName: string;
+   entityIdName: string;
 };
