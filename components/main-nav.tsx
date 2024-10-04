@@ -35,9 +35,19 @@ export default function MainNav({
 			active: pathName === `/dashboard/${params.storeId}/colors`,
 		},
 		{
+			href: `/dashboard/${params.storeId}/products`,
+			label: "Products",
+			active: pathName === `/dashboard/${params.storeId}/products`,
+		},
+		{
 			href: `/dashboard/${params.storeId}/settings`,
 			label: "Settings",
 			active: pathName === `/dashboard/${params.storeId}/settings`,
+		},
+		{
+			href: `/dashboard/${params.storeId}/orders`,
+			label: "Orders",
+			active: pathName === `/dashboard/${params.storeId}/orders`,
 		},
 	];
 	return (
