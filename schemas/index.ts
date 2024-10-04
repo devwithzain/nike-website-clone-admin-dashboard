@@ -88,6 +88,16 @@ export const sizeFormSchema = z.object({
   value: z.string().min(1),
 });
 
+export const productFormSchema = z.object({
+  name: z.string().min(1),
+  images: z.object({ url: z.string() }).array(),
+  price: z.coerce.number().min(1),
+  categoryId: z.string().min(1),
+  colorId: z.string().min(1),
+  sizeId: z.string().min(1),
+  isFeatured: z.boolean().default(false).optional(),
+  isArchived: z.boolean().default(false).optional()
+});
 
 export type TsettingData = z.infer<typeof settingSchema>;
 export type TsizeFormData = z.infer<typeof sizeFormSchema>;
@@ -96,6 +106,7 @@ export type TloginFormData = z.infer<typeof loginFormSchema>;
 export type TresetFormData = z.infer<typeof resetFormSchema>;
 export type TcreateStoreData = z.infer<typeof createStoreSchema>;
 export type TsettingFormData = z.infer<typeof settingFormSchema>;
+export type TproductFormData = z.infer<typeof productFormSchema>;
 export type TcategoryFormData = z.infer<typeof categoryFormSchema>;
 export type TbillboardFormData = z.infer<typeof billboardFormSchema>;
 export type TnewPasswordFormData = z.infer<typeof newPasswordFormSchema>;
