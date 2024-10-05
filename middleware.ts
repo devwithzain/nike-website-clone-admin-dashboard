@@ -2,18 +2,23 @@ import {
    DEFAULT_LOGIN_REDIRECT,
    apiAuthPrefix,
    authRoutes,
+   publicApiRoutes,
    publicRoutes,
 } from "@/routes";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 const { auth } = NextAuth(authConfig);
 
-export default auth((req: any) => {
+export default auth((req) => {
    const { nextUrl } = req;
    const isLoggedIn = !!req.auth;
    const isAuthRoute = authRoutes.includes(nextUrl.pathname);
    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+
+   if (publicApiRoutes) {
+      return undefined;
+   }
 
    if (isApiAuthRoute) {
       return undefined;
@@ -32,7 +37,6 @@ export default auth((req: any) => {
          nextUrl
       ));
    }
-
    return undefined;
 });
 

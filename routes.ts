@@ -2,6 +2,10 @@ export const publicRoutes = [
   "/",
 ];
 
+export const publicApiRoutes = [
+  ["/api/path*"]
+];
+
 export const authRoutes = [
   "/reset",
   "/new-password",

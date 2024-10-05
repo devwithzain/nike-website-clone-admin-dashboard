@@ -76,6 +76,12 @@ export const categoryFormSchema = z.object({
   })
 });
 
+export const subCategoryFormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+});
+
 export const colorFormSchema = z.object({
   name: z.string().min(2),
   value: z.string().min(4).max(9).regex(/^#/, {
@@ -93,6 +99,7 @@ export const productFormSchema = z.object({
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
+  subcategoryId: z.string().min(1),
   colorId: z.string().min(1),
   sizeId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
@@ -109,4 +116,5 @@ export type TsettingFormData = z.infer<typeof settingFormSchema>;
 export type TproductFormData = z.infer<typeof productFormSchema>;
 export type TcategoryFormData = z.infer<typeof categoryFormSchema>;
 export type TbillboardFormData = z.infer<typeof billboardFormSchema>;
+export type TsubCategoryFormData = z.infer<typeof subCategoryFormSchema>;
 export type TnewPasswordFormData = z.infer<typeof newPasswordFormSchema>;
