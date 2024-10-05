@@ -17,6 +17,7 @@ export default async function ProductsPage({
 			category: true,
 			size: true,
 			color: true,
+			subcategory: true,
 		},
 		orderBy: {
 			createdAt: "desc",
@@ -30,6 +31,7 @@ export default async function ProductsPage({
 		isArchived: item.isArchived,
 		price: formatter.format(item.price),
 		category: item.category.name,
+		subcategory: item.subcategory.name,
 		size: item.size.name,
 		color: item.color.value,
 		createdAt: format(item.createdAt, "MMMM do, yyyy"),

@@ -25,6 +25,10 @@ export const columns: ColumnDef<TproductColumnProps>[] = [
 		header: "Category",
 	},
 	{
+		accessorKey: "subcategory",
+		header: "Sub Category",
+	},
+	{
 		accessorKey: "size",
 		header: "Size",
 	},

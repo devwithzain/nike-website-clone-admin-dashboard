@@ -25,6 +25,11 @@ export default function MainNav({
 			active: pathName === `/dashboard/${params.storeId}/categories`,
 		},
 		{
+			href: `/dashboard/${params.storeId}/subcategories`,
+			label: "Sub Categories",
+			active: pathName === `/dashboard/${params.storeId}/subcategories`,
+		},
+		{
 			href: `/dashboard/${params.storeId}/sizes`,
 			label: "Sizes",
 			active: pathName === `/dashboard/${params.storeId}/sizes`,
@@ -40,14 +45,14 @@ export default function MainNav({
 			active: pathName === `/dashboard/${params.storeId}/products`,
 		},
 		{
-			href: `/dashboard/${params.storeId}/settings`,
-			label: "Settings",
-			active: pathName === `/dashboard/${params.storeId}/settings`,
-		},
-		{
 			href: `/dashboard/${params.storeId}/orders`,
 			label: "Orders",
 			active: pathName === `/dashboard/${params.storeId}/orders`,
+		},
+		{
+			href: `/dashboard/${params.storeId}/settings`,
+			label: "Settings",
+			active: pathName === `/dashboard/${params.storeId}/settings`,
 		},
 	];
 	return (

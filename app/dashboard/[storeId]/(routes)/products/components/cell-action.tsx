@@ -67,7 +67,7 @@ export default function CellAction({ data }: { data: TproductColumnProps }) {
 						onClick={() =>
 							router.push(`/dashboard/${params.storeId}/products/${data.id}`)
 						}>
-						<Edit className="mr-2 h-4 w-4" /> Update
+						<Edit className="mr-2 h-4 w-4" /> Edit
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => setOpen(true)}>
 						<Trash className="mr-2 h-4 w-4" /> Delete

@@ -37,6 +37,7 @@ export default function ProductForm({
 	categories,
 	sizes,
 	colors,
+	subcategories,
 }: TproductFormProps) {
 	const params = useParams();
 	const router = useRouter();
@@ -59,6 +60,7 @@ export default function ProductForm({
 				images: [],
 				price: 0,
 				categoryId: "",
+				subcategoryId: "",
 				colorId: "",
 				sizeId: "",
 				isFeatured: false,
@@ -215,6 +217,39 @@ export default function ProductForm({
 										</FormControl>
 										<SelectContent>
 											{categories.map((category) => (
+												<SelectItem
+													key={category.id}
+													value={category.id}>
+													{category.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="subcategoryId"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Sub Category</FormLabel>
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													defaultValue={field.value}
+													placeholder="Select a sub category"
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{subcategories.map((category) => (
 												<SelectItem
 													key={category.id}
 													value={category.id}>
