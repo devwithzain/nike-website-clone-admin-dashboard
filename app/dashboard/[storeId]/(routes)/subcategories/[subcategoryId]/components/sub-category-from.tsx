@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Subcategory } from "@prisma/client";
+import { Category, Subcategory } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
@@ -21,11 +21,20 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export default function SubCategoryForm({
 	initialData,
+	category,
 }: {
 	initialData: Subcategory | null;
+	category: Category[];
 }) {
 	const params = useParams();
 	const router = useRouter();
@@ -35,7 +44,7 @@ export default function SubCategoryForm({
 		resolver: zodResolver(subCategoryFormSchema),
 		defaultValues: initialData || {
 			name: "",
-			subcategoryId: "",
+			categoryId: "",
 		},
 	});
 
@@ -131,6 +140,44 @@ export default function SubCategoryForm({
 							</FormItem>
 						)}
 					/>
+					<div className="grid grid-cols-3 gap-8">
+						<FormField
+							control={form.control}
+							name="categoryId"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Label</FormLabel>
+									<Select
+										defaultValue={field.value}
+										onValueChange={field.onChange}
+										value={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													defaultValue={field.value}
+													placeholder="Select a category"
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{category.length > 0 ? (
+												category.map((cat) => (
+													<SelectItem
+														key={cat.id}
+														value={cat.id}>
+														{cat.name}
+													</SelectItem>
+												))
+											) : (
+												<SelectItem value="">No category available</SelectItem>
+											)}
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
 					<Button
 						disabled={isSubmitting}
 						type="submit">

@@ -1,4 +1,5 @@
 "use client";
+import Select from "react-select";
 import axios from "axios";
 import { useState } from "react";
 import { Trash } from "lucide-react";
@@ -9,13 +10,14 @@ import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
 import ImageUpload from "@/components/ui/image-upload";
 import AlertModal from "@/components/modal/alert-modal";
 import { productFormSchema, TproductFormData } from "@/schemas";
 import {
-	Select,
+	Select as Selected,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
@@ -30,14 +32,13 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
 
 export default function ProductForm({
 	initialData,
 	categories,
-	sizes,
-	colors,
 	subcategories,
+	colors,
+	sizes,
 }: TproductFormProps) {
 	const params = useParams();
 	const router = useRouter();
@@ -58,11 +59,11 @@ export default function ProductForm({
 		: {
 				name: "",
 				images: [],
+				productSize: [],
+				productColor: [],
 				price: 0,
 				categoryId: "",
 				subcategoryId: "",
-				colorId: "",
-				sizeId: "",
 				isFeatured: false,
 				isArchived: false,
 		  };
@@ -202,7 +203,7 @@ export default function ProductForm({
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Category</FormLabel>
-									<Select
+									<Selected
 										disabled={loading}
 										onValueChange={field.onChange}
 										value={field.value}
@@ -224,7 +225,7 @@ export default function ProductForm({
 												</SelectItem>
 											))}
 										</SelectContent>
-									</Select>
+									</Selected>
 									<FormMessage />
 								</FormItem>
 							)}
@@ -235,7 +236,7 @@ export default function ProductForm({
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Sub Category</FormLabel>
-									<Select
+									<Selected
 										disabled={loading}
 										onValueChange={field.onChange}
 										value={field.value}
@@ -257,73 +258,63 @@ export default function ProductForm({
 												</SelectItem>
 											))}
 										</SelectContent>
-									</Select>
+									</Selected>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<FormField
 							control={form.control}
-							name="sizeId"
+							name="productSize"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Size</FormLabel>
-									<Select
-										disabled={loading}
-										onValueChange={field.onChange}
-										value={field.value}
-										defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue
-													defaultValue={field.value}
-													placeholder="Select a size"
-												/>
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{sizes.map((size) => (
-												<SelectItem
-													key={size.id}
-													value={size.id}>
-													{size.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<FormControl>
+										<Select
+											isMulti
+											options={sizes.map((size) => ({
+												value: size.id,
+												label: size.name,
+											}))}
+											isDisabled={loading}
+											onChange={(selected) =>
+												field.onChange(selected.map((item) => item.value))
+											}
+											value={sizes
+												.filter((size) => field.value.includes(size.id))
+												.map((size) => ({ value: size.id, label: size.name }))}
+										/>
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<FormField
 							control={form.control}
-							name="colorId"
+							name="productColor"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Color</FormLabel>
-									<Select
-										disabled={loading}
-										onValueChange={field.onChange}
-										value={field.value}
-										defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue
-													defaultValue={field.value}
-													placeholder="Select a color"
-												/>
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{colors.map((color) => (
-												<SelectItem
-													key={color.id}
-													value={color.id}>
-													{color.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<FormLabel>Colors</FormLabel>
+									<FormControl>
+										<Select
+											isMulti
+											options={colors.map((color) => ({
+												value: color.id,
+												label: color.name,
+											}))}
+											isDisabled={loading}
+											onChange={(selected) =>
+												field.onChange(selected.map((item) => item.value))
+											}
+											className="rounded-[20px]"
+											value={colors
+												.filter((color) => field.value.includes(color.id))
+												.map((color) => ({
+													value: color.id,
+													label: color.name,
+												}))}
+										/>
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}

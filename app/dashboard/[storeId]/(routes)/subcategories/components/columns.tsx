@@ -21,6 +21,10 @@ export const columns: ColumnDef<TSubCategoryColumnProps>[] = [
 		},
 	},
 	{
+		accessorKey: "label",
+		header: "Category",
+	},
+	{
 		accessorKey: "createdAt",
 		header: "Date",
 	},

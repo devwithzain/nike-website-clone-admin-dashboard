@@ -33,6 +33,17 @@ export default async function ProductPage({
 		},
 	});
 
+	const productColor = await prismadb.productColor.findMany({
+		where: {
+			productId: params.storeId,
+		},
+	});
+	const productSize = await prismadb.productSize.findMany({
+		where: {
+			productId: params.storeId,
+		},
+	});
+
 	const colors = await prismadb.color.findMany({
 		where: {
 			storeId: params.storeId,
@@ -48,6 +59,8 @@ export default async function ProductPage({
 					colors={colors}
 					sizes={sizes}
 					initialData={product}
+					productColor={productColor}
+					productSize={productSize}
 				/>
 			</div>
 		</div>

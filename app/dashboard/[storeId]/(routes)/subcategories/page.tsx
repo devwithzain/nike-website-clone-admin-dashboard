@@ -12,6 +12,9 @@ export default async function SubCategories({
 		where: {
 			storeId: params.storeId,
 		},
+		include: {
+			category: true,
+		},
 		orderBy: {
 			createdAt: "desc",
 		},
@@ -21,6 +24,8 @@ export default async function SubCategories({
 		(billboard) => ({
 			id: billboard.id,
 			name: billboard.name,
+			label: billboard.category.name,
+			category: billboard.category.name,
 			createdAt: format(billboard.createdAt, "MMMM do, yyyy"),
 		}),
 	);
