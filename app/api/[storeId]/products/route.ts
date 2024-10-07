@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prisma";
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/current-user";
 
 export async function POST(
@@ -12,7 +12,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { name, price, categoryId, subcategoryId, colorId, sizeId, images, isFeatured, isArchived } = body;
+    const { name, price, categoryId, subcategoryId, productColor, productSize, images, isFeatured, isArchived, } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -38,11 +38,11 @@ export async function POST(
       return new NextResponse("Sub Category id is required", { status: 400 });
     }
 
-    if (!colorId) {
+    if (!productColor || !productColor.length) {
       return new NextResponse("Color id is required", { status: 400 });
     }
 
-    if (!sizeId) {
+    if (!productSize || !productSize.length) {
       return new NextResponse("Size id is required", { status: 400 });
     }
 
@@ -69,24 +69,30 @@ export async function POST(
         isArchived,
         categoryId,
         subcategoryId,
-        colorId,
-        sizeId,
         storeId: params.storeId,
         images: {
           createMany: {
-            data: [
-              ...images.map((image: { url: string; }) => image),
-            ],
+            data: images.map((image: { url: string; }) => image),
           },
         },
-      },
+        ProductSize: {
+          createMany: {
+            data: productSize.map((sizeId: string) => ({ sizeId })),
+          },
+        },
+        ProductColor: {
+          createMany: {
+            data: productColor.map((colorId: string) => ({ colorId })),
+          }
+        }
+      }
     });
 
     return NextResponse.json(product);
   } catch (error) {
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
 export async function GET(
   req: Request,
@@ -109,17 +115,33 @@ export async function GET(
         storeId: params.storeId,
         categoryId,
         subcategoryId,
-        colorId,
-        sizeId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
+        ProductColor: {
+          some: {
+            colorId,
+          },
+        },
+        ProductSize: {
+          some: {
+            sizeId,
+          },
+        },
       },
       include: {
         images: true,
         category: true,
         subcategory: true,
-        color: true,
-        size: true,
+        ProductColor: {
+          include: {
+            color: true,
+          },
+        },
+        ProductSize: {
+          include: {
+            size: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

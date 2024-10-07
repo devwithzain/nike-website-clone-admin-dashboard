@@ -2,12 +2,12 @@ import prismadb from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/current-user";
 
-export async function POST(req: Request, { params }: { params: { categoryId: string; storeId: string; }; }) {
+export async function POST(req: Request, { params }: { params: { storeId: string; }; }) {
    const currentuser = await currentUser();
    try {
       const userId = currentuser?.id;
       const body = await req.json();
-      const { name } = body;
+      const { name, categoryId } = body;
 
       if (!userId) {
          return new NextResponse("Unauthenticated", { status: 401 });
@@ -15,6 +15,10 @@ export async function POST(req: Request, { params }: { params: { categoryId: str
 
       if (!name) {
          return new NextResponse("Name is required!", { status: 400 });
+      }
+
+      if (!categoryId) {
+         return new NextResponse("Category Id is required!", { status: 400 });
       }
 
       if (!params.storeId) {
@@ -35,16 +39,18 @@ export async function POST(req: Request, { params }: { params: { categoryId: str
       const subcategory = await prismadb.subcategory.create({
          data: {
             name,
-            storeId: params.storeId
+            storeId: params.storeId,
+            categoryId
          }
       });
 
       return NextResponse.json({
          status: 201,
-         message: "Category created successfully!",
+         message: "Sub Category created successfully!",
          subcategory
       });
    } catch (error) {
+      console.log(["POST", error]);
       return new NextResponse("Something went wrong!", { status: 500 });
    }
 }

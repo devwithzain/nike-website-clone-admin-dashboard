@@ -19,8 +19,6 @@ export async function GET(
         images: true,
         category: true,
         subcategory: true,
-        size: true,
-        color: true,
       }
     });
 
@@ -79,7 +77,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { name, price, categoryId, subcategoryId, images, colorId, sizeId, isFeatured, isArchived } = body;
+    const { name, price, categoryId, subcategoryId, images, productColor, productSize, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -109,12 +107,12 @@ export async function PATCH(
       return new NextResponse("Sub Category id is required", { status: 400 });
     }
 
-    if (!colorId) {
-      return new NextResponse("Color id is required", { status: 400 });
+    if (!productColor) {
+      return new NextResponse("Product Color is required", { status: 400 });
     }
 
-    if (!sizeId) {
-      return new NextResponse("Size id is required", { status: 400 });
+    if (!productSize) {
+      return new NextResponse("Product Size is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -137,10 +135,18 @@ export async function PATCH(
         price,
         categoryId,
         subcategoryId,
-        colorId,
-        sizeId,
         images: {
           deleteMany: {},
+        },
+        ProductSize: {
+          createMany: {
+            data: productSize.map((sizeId: string) => ({ sizeId })),
+          },
+        },
+        ProductColor: {
+          createMany: {
+            data: productColor.map((colorId: string) => ({ colorId })),
+          }
         },
         isFeatured,
         isArchived,

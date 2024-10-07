@@ -80,6 +80,9 @@ export const subCategoryFormSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
+  categoryId: z.string().min(1, {
+    message: "CategoryId is required",
+  })
 });
 
 export const colorFormSchema = z.object({
@@ -100,8 +103,8 @@ export const productFormSchema = z.object({
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   subcategoryId: z.string().min(1),
-  colorId: z.string().min(1),
-  sizeId: z.string().min(1),
+  productColor: z.array(z.string()),
+  productSize: z.array(z.string()),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional()
 });
