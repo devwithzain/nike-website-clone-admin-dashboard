@@ -61,6 +61,21 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    const size = await prismadb.size.findMany({
+      where: {
+        id: {
+          in: [...productSize],
+        },
+      },
+    });
+    const color = await prismadb.color.findMany({
+      where: {
+        id: {
+          in: [...productColor],
+        },
+      },
+    });
+
     const product = await prismadb.product.create({
       data: {
         name,
@@ -77,16 +92,23 @@ export async function POST(
         },
         ProductSize: {
           createMany: {
-            data: productSize.map((sizeId: string) => ({ sizeId })),
+            data: size.map((size) => ({
+              sizeId: size.id,
+              name: size.name
+            })),
           },
         },
         ProductColor: {
           createMany: {
-            data: productColor.map((colorId: string) => ({ colorId })),
-          }
-        }
-      }
+            data: color.map((color) => ({
+              colorId: color.id,
+              name: color.name
+            })),
+          },
+        },
+      },
     });
+    console.log("productSize", productSize);
 
     return NextResponse.json(product);
   } catch (error) {
