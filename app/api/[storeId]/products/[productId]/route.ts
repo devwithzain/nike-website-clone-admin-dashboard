@@ -19,6 +19,8 @@ export async function GET(
         images: true,
         category: true,
         subcategory: true,
+        ProductColor: true,
+        ProductSize: true,
       }
     });
 

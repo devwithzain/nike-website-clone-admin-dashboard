@@ -108,7 +108,6 @@ export async function POST(
         },
       },
     });
-    console.log("productSize", productSize);
 
     return NextResponse.json(product);
   } catch (error) {
