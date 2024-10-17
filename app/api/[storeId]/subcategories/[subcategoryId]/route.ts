@@ -28,7 +28,7 @@ export async function PATCH(req: Request, { params }: { params: { subcategoryId:
    try {
       const userId = currentuser?.id;
       const body = await req.json();
-      const { name } = body;
+      const { name, imageUrl } = body;
 
       if (!userId) {
          return new NextResponse("Unauthorized", { status: 401 });
@@ -36,6 +36,10 @@ export async function PATCH(req: Request, { params }: { params: { subcategoryId:
 
       if (!name) {
          return new NextResponse("Name is required!", { status: 400 });
+      }
+
+      if (!imageUrl) {
+         return new NextResponse("Image is required!", { status: 400 });
       }
 
       if (!params.subcategoryId) {
@@ -59,6 +63,7 @@ export async function PATCH(req: Request, { params }: { params: { subcategoryId:
          },
          data: {
             name,
+            imageUrl,
          }
       });
 

@@ -77,6 +77,9 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
       const categories = await prismadb.category.findMany({
          where: {
             storeId: params.storeId,
+         },
+         include: {
+            Subcategory: true
          }
       });
 

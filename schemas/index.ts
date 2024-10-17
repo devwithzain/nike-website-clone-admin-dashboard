@@ -82,7 +82,8 @@ export const subCategoryFormSchema = z.object({
   }),
   categoryId: z.string().min(1, {
     message: "CategoryId is required",
-  })
+  }),
+  imageUrl: z.string(),
 });
 
 export const colorFormSchema = z.object({

@@ -28,6 +28,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import ImageUpload from "@/components/ui/image-upload";
 
 export default function SubCategoryForm({
 	initialData,
@@ -45,6 +46,7 @@ export default function SubCategoryForm({
 		defaultValues: initialData || {
 			name: "",
 			categoryId: "",
+			imageUrl: "",
 		},
 	});
 
@@ -126,10 +128,29 @@ export default function SubCategoryForm({
 					className="space-y-4 w-full">
 					<FormField
 						control={form.control}
+						name="imageUrl"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Background Image</FormLabel>
+								<FormControl>
+									<ImageUpload
+										onChange={(url) => field.onChange(url)}
+										value={field.value ? [field.value] : []}
+										onRemove={() => field.onChange("")}
+										disabled={isSubmitting}
+									/>
+								</FormControl>
+
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
 						name="name"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Sub Category Name</FormLabel>
+								<FormLabel>Sub Category</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Name"
@@ -146,7 +167,7 @@ export default function SubCategoryForm({
 							name="categoryId"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Label</FormLabel>
+									<FormLabel>Category</FormLabel>
 									<Select
 										defaultValue={field.value}
 										onValueChange={field.onChange}
