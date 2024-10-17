@@ -71,6 +71,7 @@ model Category {
 model Subcategory {
   id         String    @id @default(uuid()) @map("_id")
   name       String
+  imageUrl   String
   Product    Product[]
   categoryId String
   category   Category  @relation(fields: [categoryId], references: [id])
