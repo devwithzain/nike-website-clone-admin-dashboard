@@ -106,11 +106,9 @@ export type TproductColumnProps = {
 };
 
 export type TproductFormProps = {
-   initialData:
-   | (Product & {
+   initialData: Product & {
       images: Image[];
-   })
-   | null;
+   } | null;
    categories: Category[];
    subcategories: Subcategory[];
    colors: Color[];
