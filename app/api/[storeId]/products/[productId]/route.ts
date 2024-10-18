@@ -2,10 +2,7 @@ import prismadb from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/current-user";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { productId: string; }; }
-) {
+export async function GET(req: Request, { params }: { params: { productId: string; }; }) {
   try {
     if (!params.productId) {
       return new NextResponse("Product id is required", { status: 400 });
@@ -17,7 +14,7 @@ export async function GET(
       },
       include: {
         images: true,
-        category: true,
+        ProductCategory: true,
         subcategory: true,
         ProductColor: true,
         ProductSize: true,
@@ -30,10 +27,7 @@ export async function GET(
   }
 };
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { productId: string, storeId: string; }; }
-) {
+export async function DELETE(req: Request, { params }: { params: { productId: string, storeId: string; }; }) {
   try {
     const currentuser = await currentUser();
     const userId = currentuser?.id;
@@ -69,17 +63,13 @@ export async function DELETE(
   }
 };
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { productId: string, storeId: string; }; }
-) {
+export async function PATCH(req: Request, { params }: { params: { productId: string, storeId: string; }; }) {
   try {
     const currentuser = await currentUser();
     const userId = currentuser?.id;
 
     const body = await req.json();
-
-    const { name, price, categoryId, subcategoryId, images, productColor, productSize, isFeatured, isArchived } = body;
+    const { name, price, productCategory, subcategoryId, images, productColor, productSize, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -93,16 +83,16 @@ export async function PATCH(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!images || !images.length) {
+    if (!Array.isArray(images) || !images.length) {
       return new NextResponse("Images are required", { status: 400 });
     }
 
-    if (!price) {
+    if (price === undefined || price === null) {
       return new NextResponse("Price is required", { status: 400 });
     }
 
-    if (!categoryId) {
-      return new NextResponse("Category id is required", { status: 400 });
+    if (!Array.isArray(productCategory) || !productCategory.length) {
+      return new NextResponse("Product Category is required", { status: 400 });
     }
 
     if (!subcategoryId) {
@@ -128,50 +118,46 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    await prismadb.product.update({
+    const product = await prismadb.product.update({
       where: {
         id: params.productId
       },
       data: {
         name,
         price,
-        categoryId,
         subcategoryId,
         images: {
           deleteMany: {},
+          createMany: {
+            data: images.map((image: { url: string; }) => image),
+          },
         },
         ProductSize: {
+          deleteMany: {},
           createMany: {
             data: productSize.map((sizeId: string) => ({ sizeId })),
           },
         },
         ProductColor: {
+          deleteMany: {},
           createMany: {
             data: productColor.map((colorId: string) => ({ colorId })),
-          }
+          },
+        },
+        ProductCategory: {
+          deleteMany: {},
+          createMany: {
+            data: productCategory.map((categoryId: string) => ({ categoryId })),
+          },
         },
         isFeatured,
         isArchived,
       },
     });
 
-    const product = await prismadb.product.update({
-      where: {
-        id: params.productId
-      },
-      data: {
-        images: {
-          createMany: {
-            data: [
-              ...images.map((image: { url: string; }) => image),
-            ],
-          },
-        },
-      },
-    });
-
     return NextResponse.json(product);
   } catch (error) {
+    console.error("Error updating product:", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };

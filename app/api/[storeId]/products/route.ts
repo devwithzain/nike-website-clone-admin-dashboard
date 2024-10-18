@@ -2,17 +2,14 @@ import prismadb from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/current-user";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { storeId: string; }; }
-) {
+export async function POST(req: Request, { params }: { params: { storeId: string; }; }) {
   try {
     const currentuser = await currentUser();
     const userId = currentuser?.id;
 
     const body = await req.json();
 
-    const { name, price, categoryId, subcategoryId, productColor, productSize, images, isFeatured, isArchived, } = body;
+    const { name, price, subcategoryId, productColor, productSize, images, isFeatured, isArchived, productCategory } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -30,20 +27,20 @@ export async function POST(
       return new NextResponse("Price is required", { status: 400 });
     }
 
-    if (!categoryId) {
-      return new NextResponse("Category id is required", { status: 400 });
-    }
-
     if (!subcategoryId) {
       return new NextResponse("Sub Category id is required", { status: 400 });
     }
 
     if (!productColor || !productColor.length) {
-      return new NextResponse("Color id is required", { status: 400 });
+      return new NextResponse("Color is required", { status: 400 });
     }
 
     if (!productSize || !productSize.length) {
-      return new NextResponse("Size id is required", { status: 400 });
+      return new NextResponse("Size is required", { status: 400 });
+    }
+
+    if (!productCategory || !productCategory.length) {
+      return new NextResponse("Category is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -76,13 +73,20 @@ export async function POST(
       },
     });
 
+    const category = await prismadb.category.findMany({
+      where: {
+        id: {
+          in: [...productCategory],
+        },
+      },
+    });
+
     const product = await prismadb.product.create({
       data: {
         name,
         price,
         isFeatured,
         isArchived,
-        categoryId,
         subcategoryId,
         storeId: params.storeId,
         images: {
@@ -106,6 +110,13 @@ export async function POST(
             })),
           },
         },
+        ProductCategory: {
+          createMany: {
+            data: category.map((category) => ({
+              categoryId: category.id,
+            })),
+          },
+        },
       },
     });
 
@@ -115,13 +126,9 @@ export async function POST(
   }
 }
 
-export async function GET(
-  req: Request,
-  { params }: { params: { storeId: string; }; },
-) {
+export async function GET(req: Request, { params }: { params: { storeId: string; }; },) {
   try {
     const { searchParams } = new URL(req.url);
-    const categoryId = searchParams.get('categoryId') || undefined;
     const subcategoryId = searchParams.get('subcategoryId') || undefined;
     const colorId = searchParams.get('colorId') || undefined;
     const sizeId = searchParams.get('sizeId') || undefined;
@@ -134,7 +141,6 @@ export async function GET(
     const products = await prismadb.product.findMany({
       where: {
         storeId: params.storeId,
-        categoryId,
         subcategoryId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
@@ -151,7 +157,6 @@ export async function GET(
       },
       include: {
         images: true,
-        category: true,
         subcategory: true,
         ProductColor: {
           include: {
@@ -161,6 +166,11 @@ export async function GET(
         ProductSize: {
           include: {
             size: true,
+          },
+        },
+        ProductCategory: {
+          include: {
+            category: true,
           },
         },
       },
