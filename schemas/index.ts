@@ -102,10 +102,10 @@ export const productFormSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
-  categoryId: z.string().min(1),
   subcategoryId: z.string().min(1),
   productColor: z.array(z.string()),
   productSize: z.array(z.string()),
+  productCategory: z.array(z.string()),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional()
 });

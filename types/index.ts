@@ -1,5 +1,5 @@
 import { PopoverTrigger } from "@/components/ui/popover";
-import { Category, Color, Image, Product, ProductColor, ProductSize, Size, Store, Subcategory } from "@prisma/client";
+import { Category, Color, Image, Product, ProductCategory, ProductColor, ProductSize, Size, Store, Subcategory } from "@prisma/client";
 
 type TpopOverTriggerProps =
    React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -96,7 +96,9 @@ export type TproductColumnProps = {
    id: string;
    name: string;
    price: string;
-   category: string;
+   color: string[];
+   size: string[];
+   category: string[];
    subcategory: string;
    createdAt: string;
    isFeatured: boolean;
@@ -115,6 +117,7 @@ export type TproductFormProps = {
    sizes: Size[];
    productColor: ProductColor[];
    productSize: ProductSize[];
+   productCategory: ProductCategory[];
 };
 
 export type TgraphData = {
