@@ -1,5 +1,4 @@
 "use client";
-import Select from "react-select";
 import axios from "axios";
 import { useState } from "react";
 import { Trash } from "lucide-react";
@@ -32,6 +31,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 export default function ProductForm({
 	initialData,
@@ -61,8 +61,8 @@ export default function ProductForm({
 				images: [],
 				productSize: [],
 				productColor: [],
+				productCategory: [],
 				price: 0,
-				categoryId: "",
 				subcategoryId: "",
 				isFeatured: false,
 				isArchived: false,
@@ -199,37 +199,26 @@ export default function ProductForm({
 						/>
 						<FormField
 							control={form.control}
-							name="categoryId"
+							name="productCategory"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Category</FormLabel>
-									<Selected
-										disabled={loading}
-										onValueChange={field.onChange}
-										value={field.value}
-										defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue
-													defaultValue={field.value}
-													placeholder="Select a category"
-												/>
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{categories.map((category) => (
-												<SelectItem
-													key={category.id}
-													value={category.id}>
-													{category.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Selected>
+									<FormControl>
+										<MultiSelect
+											options={categories.map((category) => ({
+												value: category.id,
+												label: category.name,
+											}))}
+											onValueChange={field.onChange}
+											value={field.value || []}
+											placeholder="Select categories"
+										/>
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
+
 						<FormField
 							control={form.control}
 							name="subcategoryId"
@@ -270,19 +259,14 @@ export default function ProductForm({
 								<FormItem>
 									<FormLabel>Size</FormLabel>
 									<FormControl>
-										<Select
-											isMulti
+										<MultiSelect
 											options={sizes.map((size) => ({
 												value: size.id,
 												label: size.name,
 											}))}
-											isDisabled={loading}
-											onChange={(selected) =>
-												field.onChange(selected.map((item) => item.value))
-											}
-											value={sizes
-												.filter((size) => field.value.includes(size.id))
-												.map((size) => ({ value: size.id, label: size.name }))}
+											onValueChange={field.onChange}
+											value={field.value || []}
+											placeholder="Select sizes"
 										/>
 									</FormControl>
 									<FormMessage />
@@ -296,23 +280,14 @@ export default function ProductForm({
 								<FormItem>
 									<FormLabel>Colors</FormLabel>
 									<FormControl>
-										<Select
-											isMulti
+										<MultiSelect
 											options={colors.map((color) => ({
 												value: color.id,
 												label: color.name,
 											}))}
-											isDisabled={loading}
-											onChange={(selected) =>
-												field.onChange(selected.map((item) => item.value))
-											}
-											className="rounded-[20px]"
-											value={colors
-												.filter((color) => field.value.includes(color.id))
-												.map((color) => ({
-													value: color.id,
-													label: color.name,
-												}))}
+											onValueChange={field.onChange}
+											value={field.value || []}
+											placeholder="Select colors"
 										/>
 									</FormControl>
 									<FormMessage />

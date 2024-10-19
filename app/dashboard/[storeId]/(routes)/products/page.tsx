@@ -14,8 +14,22 @@ export default async function ProductsPage({
 			storeId: params.storeId,
 		},
 		include: {
-			category: true,
 			subcategory: true,
+			ProductCategory: {
+				include: {
+					category: true,
+				},
+			},
+			ProductColor: {
+				include: {
+					color: true,
+				},
+			},
+			ProductSize: {
+				include: {
+					size: true,
+				},
+			},
 		},
 		orderBy: {
 			createdAt: "desc",
@@ -27,7 +41,9 @@ export default async function ProductsPage({
 		name: item.name,
 		isFeatured: item.isFeatured,
 		isArchived: item.isArchived,
-		category: item.category.name,
+		color: item.ProductColor.map((color) => color.color.name),
+		size: item.ProductSize.map((size) => size.size.name),
+		category: item.ProductCategory.map((category) => category.category.name),
 		subcategory: item.subcategory.name,
 		price: formatter.format(item.price),
 		createdAt: format(item.createdAt, "MMMM do, yyyy"),

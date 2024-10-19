@@ -50,6 +50,12 @@ export default async function ProductPage({
 		},
 	});
 
+	const productCategory = await prismadb.productCategory.findMany({
+		where: {
+			productId: params.storeId,
+		},
+	});
+
 	return (
 		<div className="flex-col">
 			<div className="flex-1 space-y-4 p-8 pt-6">
@@ -61,6 +67,7 @@ export default async function ProductPage({
 					initialData={product}
 					productColor={productColor}
 					productSize={productSize}
+					productCategory={productCategory}
 				/>
 			</div>
 		</div>
