@@ -54,16 +54,22 @@ export default function ProductForm({
 	const defaultValues = initialData
 		? {
 				...initialData,
-				price: parseFloat(String(initialData?.price)),
+				price: parseFloat(String(initialData.price)),
+				material: initialData.material || undefined,
+				rating: initialData.rating || undefined,
+				sale: initialData.sale || undefined,
 		  }
 		: {
 				name: "",
+				rating: undefined,
+				sale: undefined,
+				material: undefined,
 				images: [],
 				productSize: [],
 				productColor: [],
 				productCategory: [],
 				price: 0,
-				subcategoryId: "",
+				subcategoryId: undefined,
 				isFeatured: false,
 				isArchived: false,
 		  };
@@ -190,6 +196,60 @@ export default function ProductForm({
 											type="number"
 											disabled={loading}
 											placeholder="9.99"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="sale"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Sale</FormLabel>
+									<FormControl>
+										<Input
+											type="number"
+											disabled={loading}
+											placeholder="9.99"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="material"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Material</FormLabel>
+									<FormControl>
+										<Input
+											type="text"
+											disabled={loading}
+											placeholder="Material"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="rating"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Rating</FormLabel>
+									<FormControl>
+										<Input
+											type="text"
+											disabled={loading}
+											placeholder="Highly Rated"
 											{...field}
 										/>
 									</FormControl>

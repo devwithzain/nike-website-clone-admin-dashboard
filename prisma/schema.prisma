@@ -86,6 +86,9 @@ model Product {
   storeId         String
   store           Store             @relation(fields: [storeId], references: [id])
   name            String
+  material        String?
+  rating          String?
+  sale            String?
   price           Float
   isFeatured      Boolean           @default(false)
   isArchived      Boolean           @default(false)
@@ -102,6 +105,7 @@ model Product {
 
 model ProductCategory {
   id         String   @id @default(uuid()) @map("_id")
+  name       String
   productId  String
   categoryId String
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
