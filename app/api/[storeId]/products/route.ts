@@ -97,6 +97,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
         rating,
         material,
         price,
+        categoryId: category.map((item) => item.id)[0],
         isFeatured,
         isArchived,
         subcategoryId,
@@ -139,13 +140,14 @@ export async function POST(req: Request, { params }: { params: { storeId: string
   }
 }
 
-export async function GET(req: Request, { params }: { params: { storeId: string; }; },) {
+export async function GET(req: Request, { params }: { params: { storeId: string; }; }) {
   try {
     const { searchParams } = new URL(req.url);
     const subcategoryId = searchParams.get('subcategoryId') || undefined;
     const colorId = searchParams.get('colorId') || undefined;
     const sizeId = searchParams.get('sizeId') || undefined;
     const isFeatured = searchParams.get('isFeatured');
+    const categoryId = searchParams.get('categoryId') || undefined;
 
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
@@ -157,6 +159,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
         subcategoryId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
+        categoryId,
         ProductColor: {
           some: {
             colorId,
@@ -167,6 +170,11 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
             sizeId,
           },
         },
+        ProductCategory: {
+          some: {
+            categoryId
+          }
+        }
       },
       include: {
         images: true,
@@ -189,7 +197,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
       },
       orderBy: {
         createdAt: 'desc',
-      }
+      },
     });
 
     return NextResponse.json(products);

@@ -134,10 +134,19 @@ export default function SubCategoryForm({
 								<FormLabel>Background Image</FormLabel>
 								<FormControl>
 									<ImageUpload
-										onChange={(url) => field.onChange(url)}
-										value={field.value ? [field.value] : []}
-										onRemove={() => field.onChange("")}
-										disabled={isSubmitting}
+										value={
+											Array.isArray(field.value)
+												? field.value.map((image) => image.url)
+												: field.value
+												? [field.value]
+												: []
+										}
+										onImageUploads={(urls) => {
+											field.onChange(urls.length > 0 ? urls[0] : "");
+										}}
+										onRemoveImage={() => {
+											field.onChange("");
+										}}
 									/>
 								</FormControl>
 

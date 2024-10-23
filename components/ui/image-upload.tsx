@@ -1,76 +1,93 @@
 "use client";
-
 import {
 	CldUploadWidget,
 	CloudinaryUploadWidgetInfo,
 	CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { TimageUploadProps } from "@/types";
-import { ImagePlus, Trash } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ImagePlus, Trash } from "lucide-react";
 
 export default function ImageUpload({
-	disabled,
-	onChange,
-	onRemove,
-	value,
+	value = [],
+	onImageUploads,
+	onRemoveImage,
 }: TimageUploadProps) {
-	const [isMounted, setIsMounted] = useState(false);
+	const [mediaUrls, setMediaUrls] = useState<string[]>(value);
 
 	useEffect(() => {
-		setIsMounted(true);
-	}, []);
+		setMediaUrls(value);
+	}, [value]);
 
-	const onUpload = (result: CloudinaryUploadWidgetResults) => {
+	const handleMediaChange = (result: CloudinaryUploadWidgetResults) => {
 		if (typeof result === "object" && "info" in result) {
 			const info = result.info as CloudinaryUploadWidgetInfo;
-			onChange(info.secure_url);
+
+			setMediaUrls((prevUrls) => {
+				const newMediaUrls = [...prevUrls, info.secure_url];
+				onImageUploads(newMediaUrls);
+				return newMediaUrls;
+			});
 		}
 	};
-
-	if (!isMounted) {
-		return null;
-	}
 
 	return (
 		<div>
 			<div className="mb-4 flex items-center gap-4">
-				{value.map((url) => (
-					<div
-						key={url}
-						className="relative w-[200px] h-[200px] rounded-md overflow-hidden">
-						<div className="z-10 absolute top-2 right-2">
-							<Button
-								type="button"
-								onClick={() => onRemove(url)}
-								variant="destructive"
-								size="sm">
-								<Trash className="h-4 w-4" />
-							</Button>
+				{mediaUrls.map((url) => {
+					const isVideo =
+						url.endsWith(".mp4") ||
+						url.endsWith(".webm") ||
+						url.endsWith(".ogg");
+
+					return (
+						<div
+							key={url}
+							className="relative w-[200px] h-[200px] rounded-md overflow-hidden">
+							<div className="z-10 absolute top-2 right-2">
+								<Button
+									type="button"
+									onClick={() => onRemoveImage(url)}
+									variant="destructive"
+									size="sm">
+									<Trash className="h-4 w-4" />
+								</Button>
+							</div>
+
+							{isVideo ? (
+								<video
+									controls
+									className="object-cover w-full h-full">
+									<source
+										src={url}
+										type="video/mp4"
+									/>
+									Your browser does not support the video tag.
+								</video>
+							) : (
+								<Image
+									fill
+									className="object-cover"
+									alt="Media"
+									src={url}
+								/>
+							)}
 						</div>
-						<Image
-							fill
-							className="object-cover"
-							alt="Image"
-							src={url}
-						/>
-					</div>
-				))}
+					);
+				})}
 			</div>
 			<CldUploadWidget
-				onUpload={onUpload}
+				onSuccess={handleMediaChange}
 				uploadPreset="tgyt3gyu">
 				{({ open }) => {
 					const onClick = () => {
 						open();
 					};
-
 					return (
 						<Button
 							type="button"
-							disabled={disabled}
 							variant="secondary"
 							onClick={onClick}>
 							<ImagePlus className="h-4 w-4 mr-2" />

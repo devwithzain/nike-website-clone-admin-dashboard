@@ -39,13 +39,6 @@ export type TapiAlertProps = {
    variant: "public" | "admin";
 };
 
-export type TimageUploadProps = {
-   onChange: (value: string) => void;
-   onRemove: (value: string) => void;
-   value: string[];
-   disabled?: boolean;
-};
-
 export type TBillboardColumnProps = {
    id: string;
    label: string;
@@ -131,4 +124,10 @@ export type TorderColumnProps = {
    totalPrice: string;
    products: string;
    createdAt: string;
+};
+
+export type TimageUploadProps = {
+   value: string[];
+   onImageUploads: (urls: string[]) => void;
+   onRemoveImage: (url: string) => void;
 };

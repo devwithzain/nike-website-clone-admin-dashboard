@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
 import ImageUpload from "@/components/ui/image-upload";
 import AlertModal from "@/components/modal/alert-modal";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { productFormSchema, TproductFormData } from "@/schemas";
 import {
 	Select as Selected,
@@ -31,7 +32,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { MultiSelect } from "@/components/ui/multi-select";
 
 export default function ProductForm({
 	initialData,
@@ -152,15 +152,14 @@ export default function ProductForm({
 								<FormControl>
 									<ImageUpload
 										value={field.value.map((image) => image.url)}
-										disabled={loading}
-										onChange={(url) =>
-											field.onChange([...field.value, { url }])
-										}
-										onRemove={(url) =>
-											field.onChange([
-												...field.value.filter((current) => current.url !== url),
-											])
-										}
+										onImageUploads={(urls) => {
+											field.onChange(urls.map((url) => ({ url })));
+										}}
+										onRemoveImage={(url) => {
+											field.onChange(
+												field.value.filter((current) => current.url !== url),
+											);
+										}}
 									/>
 								</FormControl>
 								<FormMessage />
