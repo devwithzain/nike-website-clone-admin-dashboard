@@ -92,6 +92,7 @@ model Product {
   price           Float
   isFeatured      Boolean           @default(false)
   isArchived      Boolean           @default(false)
+  categoryId      String
   subcategoryId   String
   subcategory     Subcategory       @relation(fields: [subcategoryId], references: [id])
   images          Image[]
