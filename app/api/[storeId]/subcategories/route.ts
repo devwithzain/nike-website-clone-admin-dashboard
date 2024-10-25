@@ -55,7 +55,6 @@ export async function POST(req: Request, { params }: { params: { storeId: string
          subcategory
       });
    } catch (error) {
-      console.log(["POST", error]);
       return new NextResponse("Something went wrong!", { status: 500 });
    }
 }

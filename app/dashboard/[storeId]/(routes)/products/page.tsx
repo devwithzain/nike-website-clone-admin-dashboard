@@ -15,17 +15,17 @@ export default async function ProductsPage({
 		},
 		include: {
 			subcategory: true,
-			ProductCategory: {
+			productCategory: {
 				include: {
 					category: true,
 				},
 			},
-			ProductColor: {
+			productColorImage: {
 				include: {
 					color: true,
 				},
 			},
-			ProductSize: {
+			productSize: {
 				include: {
 					size: true,
 				},
@@ -41,9 +41,9 @@ export default async function ProductsPage({
 		name: item.name,
 		isFeatured: item.isFeatured,
 		isArchived: item.isArchived,
-		color: item.ProductColor.map((color) => color.color.name),
-		size: item.ProductSize.map((size) => size.size.name),
-		category: item.ProductCategory.map((category) => category.category.name),
+		color: item.productColorImage.map((color) => color.color.name),
+		size: item.productSize.map((size) => size.size.name),
+		category: item.productCategory.map((category) => category.category.name),
 		subcategory: item.subcategory.name,
 		price: formatter.format(item.price),
 		createdAt: format(item.createdAt, "MMMM do, yyyy"),
