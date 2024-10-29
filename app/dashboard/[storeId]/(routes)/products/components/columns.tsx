@@ -35,14 +35,6 @@ export const columns: ColumnDef<TproductColumnProps>[] = [
 	{
 		accessorKey: "color",
 		header: "Color",
-		cell: ({ row }) => (
-			<div className="flex items-center gap-x-2">
-				<div
-					className="h-6 w-6 rounded-full border"
-					style={{ backgroundColor: row.original.color[0] }}
-				/>
-			</div>
-		),
 	},
 	{
 		accessorKey: "createdAt",

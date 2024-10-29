@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
+import ImageUpload from "@/components/ui/image-upload";
 import AlertModal from "@/components/modal/alert-modal";
 import { colorFormSchema, TcolorFormData } from "@/schemas";
 
@@ -44,6 +45,7 @@ export default function ColorForm({
 		resolver: zodResolver(colorFormSchema),
 		defaultValues: initialData || {
 			name: "",
+			images: [],
 		},
 	});
 
@@ -111,7 +113,30 @@ export default function ColorForm({
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-8 w-full">
-					<div className="md:grid md:grid-cols-3 gap-8">
+					<FormField
+						control={form.control}
+						name="images"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Images</FormLabel>
+								<FormControl>
+									<ImageUpload
+										value={field.value.map((image) => image.url)}
+										onImageUploads={(urls) => {
+											field.onChange(urls.map((url) => ({ url })));
+										}}
+										onRemoveImage={(url) => {
+											field.onChange(
+												field.value.filter((current) => current.url !== url),
+											);
+										}}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className="grid grid-cols-3 gap-8">
 						<FormField
 							control={form.control}
 							name="name"
@@ -124,29 +149,6 @@ export default function ColorForm({
 											placeholder="Color name"
 											{...field}
 										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="value"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Value</FormLabel>
-									<FormControl>
-										<div className="flex items-center gap-x-4">
-											<Input
-												disabled={loading}
-												placeholder="Color value"
-												{...field}
-											/>
-											<div
-												className="border p-4 rounded-full"
-												style={{ backgroundColor: field.value }}
-											/>
-										</div>
 									</FormControl>
 									<FormMessage />
 								</FormItem>

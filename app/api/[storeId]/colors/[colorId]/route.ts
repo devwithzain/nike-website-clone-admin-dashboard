@@ -14,6 +14,9 @@ export async function GET(
     const color = await prismadb.color.findUnique({
       where: {
         id: params.colorId
+      },
+      include: {
+        images: true,
       }
     });
 
@@ -70,7 +73,7 @@ export async function PATCH(req: Request,
 
     const body = await req.json();
 
-    const { name, value } = body;
+    const { name, images } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -80,8 +83,8 @@ export async function PATCH(req: Request,
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!value) {
-      return new NextResponse("Value is required", { status: 400 });
+    if (!images) {
+      return new NextResponse("Images is required", { status: 400 });
     }
 
 
@@ -100,14 +103,22 @@ export async function PATCH(req: Request,
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    await prismadb.image.deleteMany({
+      where: {
+        colorId: params.colorId,
+      },
+    });
+
     const color = await prismadb.color.update({
       where: {
-        id: params.colorId
+        id: params.colorId,
       },
       data: {
         name,
-        value
-      }
+        images: {
+          create: images.map((image) => ({ url: image.url })),
+        },
+      },
     });
 
     return NextResponse.json(color);

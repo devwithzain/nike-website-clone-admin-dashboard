@@ -12,7 +12,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
-import ImageUpload from "@/components/ui/image-upload";
 import AlertModal from "@/components/modal/alert-modal";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { productFormSchema, TproductFormData } from "@/schemas";
@@ -64,7 +63,6 @@ export default function ProductForm({
 				rating: undefined,
 				sale: undefined,
 				material: undefined,
-				images: [],
 				productSize: [],
 				productColor: [],
 				productCategory: [],
@@ -143,29 +141,6 @@ export default function ProductForm({
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-8 w-full">
-					<FormField
-						control={form.control}
-						name="images"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Images</FormLabel>
-								<FormControl>
-									<ImageUpload
-										value={field.value.map((image) => image.url)}
-										onImageUploads={(urls) => {
-											field.onChange(urls.map((url) => ({ url })));
-										}}
-										onRemoveImage={(url) => {
-											field.onChange(
-												field.value.filter((current) => current.url !== url),
-											);
-										}}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
 					<div className="md:grid md:grid-cols-3 gap-8">
 						<FormField
 							control={form.control}

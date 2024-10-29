@@ -9,7 +9,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
 
     const body = await req.json();
 
-    const { name, price, subcategoryId, productColor, productSize, images, isFeatured, isArchived, productCategory, rating, material, sale } = body;
+    const { name, price, subcategoryId, productColor, productSize, isFeatured, isArchived, productCategory, rating, material, sale } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -26,10 +26,6 @@ export async function POST(req: Request, { params }: { params: { storeId: string
     }
     if (!rating) {
       return new NextResponse("Rating is required", { status: 400 });
-    }
-
-    if (!images || !images.length) {
-      return new NextResponse("Images are required", { status: 400 });
     }
 
     if (!price) {
@@ -102,12 +98,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
         isArchived,
         subcategoryId,
         storeId: params.storeId,
-        images: {
-          createMany: {
-            data: images.map((image: { url: string; }) => image),
-          },
-        },
-        ProductSize: {
+        productSize: {
           createMany: {
             data: size.map((size) => ({
               sizeId: size.id,
@@ -115,7 +106,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
             })),
           },
         },
-        ProductColor: {
+        productColor: {
           createMany: {
             data: color.map((color) => ({
               colorId: color.id,
@@ -123,7 +114,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
             })),
           },
         },
-        ProductCategory: {
+        productCategory: {
           createMany: {
             data: category.map((category) => ({
               categoryId: category.id,
@@ -160,36 +151,39 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
         categoryId,
-        ProductColor: {
+        productColor: {
           some: {
             colorId,
           },
         },
-        ProductSize: {
+        productSize: {
           some: {
             sizeId,
           },
         },
-        ProductCategory: {
+        productCategory: {
           some: {
             categoryId
           }
         }
       },
       include: {
-        images: true,
         subcategory: true,
-        ProductColor: {
+        productColor: {
           include: {
-            color: true,
+            color: {
+              include: {
+                images: true,
+              }
+            }
           },
         },
-        ProductSize: {
+        productSize: {
           include: {
             size: true,
           },
         },
-        ProductCategory: {
+        productCategory: {
           include: {
             category: true,
           },
@@ -204,4 +198,4 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
   } catch (error) {
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+};  

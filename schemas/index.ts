@@ -88,9 +88,7 @@ export const subCategoryFormSchema = z.object({
 
 export const colorFormSchema = z.object({
   name: z.string().min(2),
-  value: z.string().min(4).max(9).regex(/^#/, {
-    message: "String must be a valid hex code",
-  }),
+  images: z.object({ url: z.string() }).array(),
 });
 
 export const sizeFormSchema = z.object({
@@ -103,7 +101,6 @@ export const productFormSchema = z.object({
   material: z.string().optional(),
   rating: z.string().optional(),
   sale: z.string().optional(),
-  images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   subcategoryId: z.string().min(1),
   productColor: z.array(z.string()),

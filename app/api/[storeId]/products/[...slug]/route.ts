@@ -21,29 +21,31 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
           subcategory: {
             name: subcategory,
           },
-          ProductCategory: {
+          productCategory: {
             some: {
               category: {
                 name: category,
               },
             },
           },
-
         },
         include: {
-          images: true,
           subcategory: true,
-          ProductColor: {
+          productColor: {
             include: {
-              color: true,
+              color: {
+                include: {
+                  images: true,
+                },
+              },
             },
           },
-          ProductSize: {
+          productSize: {
             include: {
               size: true,
             },
           },
-          ProductCategory: {
+          productCategory: {
             include: {
               category: true,
             },
@@ -57,7 +59,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
         where: {
           id: productId,
           storeId: storeId,
-          ProductCategory: {
+          productCategory: {
             some: {
               category: {
                 name: category,
@@ -66,19 +68,22 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
           },
         },
         include: {
-          images: true,
           subcategory: true,
-          ProductColor: {
+          productColor: {
             include: {
-              color: true,
+              color: {
+                include: {
+                  images: true,
+                },
+              },
             },
           },
-          ProductSize: {
+          productSize: {
             include: {
               size: true,
             },
           },
-          ProductCategory: {
+          productCategory: {
             include: {
               category: true,
             },
@@ -94,19 +99,22 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
           storeId: storeId,
         },
         include: {
-          images: true,
           subcategory: true,
-          ProductColor: {
+          productColor: {
             include: {
-              color: true,
+              color: {
+                include: {
+                  images: true,
+                },
+              },
             },
           },
-          ProductSize: {
+          productSize: {
             include: {
               size: true,
             },
           },
-          ProductCategory: {
+          productCategory: {
             include: {
               category: true,
             },
@@ -127,16 +135,18 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { productId: string, storeId: string; }; }) {
+export async function DELETE(req: Request, { params }: { params: { storeId: string; slug: string[]; }; }) {
   try {
     const currentuser = await currentUser();
     const userId = currentuser?.id;
+
+    const productId = params.slug[0];
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!params.productId) {
+    if (!productId) {
       return new NextResponse("Product id is required", { status: 400 });
     }
 
@@ -153,7 +163,7 @@ export async function DELETE(req: Request, { params }: { params: { productId: st
 
     const product = await prismadb.product.delete({
       where: {
-        id: params.productId
+        id: productId
       },
     });
 
@@ -163,48 +173,54 @@ export async function DELETE(req: Request, { params }: { params: { productId: st
   }
 };
 
-export async function PATCH(req: Request, { params }: { params: { productId: string, storeId: string; }; }) {
+export async function PATCH(req: Request, { params }: { params: { slug: string[], storeId: string; }; }) {
   try {
+    const productId = params.slug[0];
     const currentuser = await currentUser();
     const userId = currentuser?.id;
 
     const body = await req.json();
-    const { name, price, productCategory, subcategoryId, images, productColor, productSize, isFeatured, isArchived } = body;
+    const { name, price, subcategoryId, productColor, productSize, isFeatured, isArchived, productCategory, rating, material, sale } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!params.productId) {
-      return new NextResponse("Product id is required", { status: 400 });
-    }
-
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
-
-    if (!Array.isArray(images) || !images.length) {
-      return new NextResponse("Images are required", { status: 400 });
+    if (!sale) {
+      return new NextResponse("Sale is required", { status: 400 });
+    }
+    if (!material) {
+      return new NextResponse("Material is required", { status: 400 });
+    }
+    if (!rating) {
+      return new NextResponse("Rating is required", { status: 400 });
     }
 
-    if (price === undefined || price === null) {
+    if (!price) {
       return new NextResponse("Price is required", { status: 400 });
-    }
-
-    if (!Array.isArray(productCategory) || !productCategory.length) {
-      return new NextResponse("Product Category is required", { status: 400 });
     }
 
     if (!subcategoryId) {
       return new NextResponse("Sub Category id is required", { status: 400 });
     }
 
-    if (!productColor) {
-      return new NextResponse("Product Color is required", { status: 400 });
+    if (!productColor || !productColor.length) {
+      return new NextResponse("Color is required", { status: 400 });
     }
 
-    if (!productSize) {
-      return new NextResponse("Product Size is required", { status: 400 });
+    if (!productSize || !productSize.length) {
+      return new NextResponse("Size is required", { status: 400 });
+    }
+
+    if (!productCategory || !productCategory.length) {
+      return new NextResponse("Category is required", { status: 400 });
+    }
+
+    if (!params.storeId) {
+      return new NextResponse("Store id is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -218,36 +234,62 @@ export async function PATCH(req: Request, { params }: { params: { productId: str
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    const size = await prismadb.size.findMany({
+      where: {
+        id: {
+          in: [...productSize],
+        },
+      },
+    });
+    const color = await prismadb.color.findMany({
+      where: {
+        id: {
+          in: [...productColor],
+        },
+      },
+    });
+
+    const category = await prismadb.category.findMany({
+      where: {
+        id: {
+          in: [...productCategory],
+        },
+      },
+    });
+
     const product = await prismadb.product.update({
       where: {
-        id: params.productId
+        id: productId
       },
       data: {
         name,
         price,
         subcategoryId,
-        images: {
+        productSize: {
           deleteMany: {},
           createMany: {
-            data: images.map((image: { url: string; }) => image),
+            data: size.map((size) => ({
+              sizeId: size.id,
+              name: size.name
+            })),
           },
         },
-        ProductSize: {
+        productColor: {
           deleteMany: {},
           createMany: {
-            data: productSize.map((sizeId: string) => ({ sizeId })),
+            data: color.map((color) => ({
+              colorId: color.id,
+              name: color.name
+            })),
           },
         },
-        ProductColor: {
+        productCategory: {
           deleteMany: {},
           createMany: {
-            data: productColor.map((colorId: string) => ({ colorId })),
-          },
-        },
-        ProductCategory: {
-          deleteMany: {},
-          createMany: {
-            data: productCategory.map((categoryId: string) => ({ categoryId, name })),
+            data: category.map((category) => ({
+              categoryId: category.id,
+              name: category.name
+            })),
           },
         },
         isFeatured,
@@ -257,7 +299,6 @@ export async function PATCH(req: Request, { params }: { params: { productId: str
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error("Error updating product:", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };

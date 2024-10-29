@@ -11,7 +11,7 @@ export async function POST(
     const userId = currentuser?.id;
     const body = await req.json();
 
-    const { name, value } = body;
+    const { name, images } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -21,8 +21,8 @@ export async function POST(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!value) {
-      return new NextResponse("Value is required", { status: 400 });
+    if (!images) {
+      return new NextResponse("Images is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -43,7 +43,11 @@ export async function POST(
     const color = await prismadb.color.create({
       data: {
         name,
-        value,
+        images: {
+          createMany: {
+            data: images.map((image: { url: string; }) => image),
+          },
+        },
         storeId: params.storeId
       }
     });
@@ -66,6 +70,9 @@ export async function GET(
     const colors = await prismadb.color.findMany({
       where: {
         storeId: params.storeId
+      },
+      include: {
+        images: true,
       }
     });
 

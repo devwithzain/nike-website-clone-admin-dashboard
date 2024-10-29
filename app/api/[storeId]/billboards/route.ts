@@ -51,7 +51,6 @@ export async function POST(req: Request, { params }: { params: { storeId: string
          billboard
       });
    } catch (error) {
-      console.log("[BILLBOARDS_POST]", error);
       return new NextResponse("Something went wrong!", { status: 500 });
    }
 }

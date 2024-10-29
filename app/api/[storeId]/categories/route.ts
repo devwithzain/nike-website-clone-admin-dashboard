@@ -79,7 +79,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string;
             storeId: params.storeId,
          },
          include: {
-            Subcategory: true
+            subcategory: true
          }
       });
 

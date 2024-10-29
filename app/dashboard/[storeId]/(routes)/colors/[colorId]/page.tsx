@@ -10,6 +10,9 @@ export default async function ColorPage({
 		where: {
 			id: params.colorId,
 		},
+		include: {
+			images: true,
+		},
 	});
 
 	return (

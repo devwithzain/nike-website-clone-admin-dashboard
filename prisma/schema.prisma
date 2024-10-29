@@ -95,7 +95,6 @@ model Product {
   categoryId      String
   subcategoryId   String
   subcategory     Subcategory       @relation(fields: [subcategoryId], references: [id])
-  images          Image[]
   orderItems      OrderItem[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -148,10 +147,10 @@ model Size {
 
 model Color {
   id           String         @id @default(uuid()) @map("_id")
+  name         String
   storeId      String
   store        Store          @relation(fields: [storeId], references: [id])
-  name         String
-  value        String
+  images       Image[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   productColor ProductColor[]
@@ -159,9 +158,9 @@ model Color {
 
 model ProductColor {
   id        String   @id @default(uuid()) @map("_id")
+  name      String
   productId String
   colorId   String
-  name      String
   color     Color    @relation(fields: [colorId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -181,9 +180,9 @@ model ProductSize {
 
 model Image {
   id        String   @id @default(uuid()) @map("_id")
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  color     Color    @relation(fields: [colorId], references: [id])
+  colorId   String
 }

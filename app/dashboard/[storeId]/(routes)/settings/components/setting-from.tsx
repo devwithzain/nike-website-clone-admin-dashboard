@@ -64,7 +64,6 @@ export default function SettingFrom({ initialData }: { initialData: Store }) {
 				toast.error("Something went wrong");
 			}
 		} catch (error) {
-			console.log(error);
 			toast.error("Make sure you remove all products from your store first.");
 		} finally {
 			setOpen(false);
