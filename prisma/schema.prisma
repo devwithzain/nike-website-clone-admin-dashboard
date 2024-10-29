@@ -16,7 +16,7 @@ model Admin {
   password      String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  Store         Store[]
+  store         Store[]
 }
 
 model PasswordResetToken {
@@ -35,13 +35,13 @@ model Store {
   user        Admin         @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  Billboard   Billboard[]
-  Category    Category[]
-  Product     Product[]
-  Order       Order[]
-  Size        Size[]
-  Color       Color[]
-  Subcategory Subcategory[]
+  billboard   Billboard[]
+  category    Category[]
+  product     Product[]
+  order       Order[]
+  size        Size[]
+  color       Color[]
+  subcategory Subcategory[]
 }
 
 model Billboard {
@@ -64,8 +64,8 @@ model Category {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   billboard       Billboard         @relation(fields: [billboardId], references: [id])
-  Subcategory     Subcategory[]
-  ProductCategory ProductCategory[]
+  subcategory     Subcategory[]
+  productCategory ProductCategory[]
 }
 
 model Subcategory {
@@ -99,9 +99,9 @@ model Product {
   orderItems      OrderItem[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  ProductColor    ProductColor[]
-  ProductSize     ProductSize[]
-  ProductCategory ProductCategory[]
+  productColor    ProductColor[]
+  productSize     ProductSize[]
+  productCategory ProductCategory[]
 }
 
 model ProductCategory {
@@ -143,7 +143,7 @@ model Size {
   value       String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  ProductSize ProductSize[]
+  productSize ProductSize[]
 }
 
 model Color {
@@ -154,7 +154,7 @@ model Color {
   value        String
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  ProductColor ProductColor[]
+  productColor ProductColor[]
 }
 
 model ProductColor {
